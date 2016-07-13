@@ -1,0 +1,16 @@
+{
+  "name": "botcourse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": ". ./.token && node app.js"
+  },
+  "author": "Andrew James Dick",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/client": "^3.5.1",
+    "is-phone": "^v2.0.0"
+  }
+}
