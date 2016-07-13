@@ -2,6 +2,7 @@ const RtmClient = require('@slack/client').RtmClient;
 const MemoryDataStore = require('@slack/client').MemoryDataStore;
 const RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 const token = process.env.SLACK_TOKEN || '';
+const isPhone = require('is-phone');
 
 const rtm = new RtmClient(token, {
   logLevel: 'error',
@@ -68,11 +69,17 @@ handlers.GET_ADDRESS = (message) => {
 }
 
 handlers.GET_PHONE = (message) => {
-  
+
   console.log(message.text, state);
-  userData.push("Phone Number:" + message.text);
-  rtm.sendMessage("What's your gender?", message.channel)
-  setState(states.GET_GENDER);
+
+  if (isPhone(message.text)) {
+    rtm.sendMessage("What's your gender?", message.channel)
+    setState(states.GET_GENDER);
+    userData.push("Phone Number:" + message.text);
+  } else {
+    rtm.sendMessage("Oops, that doesn't look like a valid phone number. Try again with this format: QQQ QQQ QQQQ", message.channel)  
+  }
+
   console.log(message.text, state);
 
 }
