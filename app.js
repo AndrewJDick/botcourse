@@ -20,47 +20,43 @@ const rtm = new RtmClient(token, {
 const WitClient = new Wit.Client({
   apiToken: '4BPM4Z5KW42AHDFOTSOGIRK4VSLRXHD3'
 });
- 
-WitClient.message('I want to go to Madrid between November 24th and 30th', {})
+
+/* proxy for now, for flexibility in this area later */
+const setState = (newState) => {
+  state = newState;
+}
+
+const states = {
+  DEFAULT: "DEFAULT",
+  GET_NAME: "GET_NAME",
+  GET_ADDRESS: "GET_ADDRESS",
+  GET_PHONE: "GET_PHONE",
+  GET_GENDER: "GET_GENDER",
+  GET_CONFIRMATION: "GET_CONFIRMATION"
+}
+
+/* init state, set initial state */
+let state;
+state = states.DEFAULT;
+
+/* Store User Data. */
+var userData = [];
+
+/* functions that send responses and set state, called based on state */
+
+const handlers = {};
+
+handlers.DEFAULT = (message) => {
+  
+  rtm.sendMessage("Welcome! I hear you would like to go on holiday?", message.channel);
+  WitClient.message(message.text, {})
     .then((response) => {
         console.log(response.entities);
     })
     .catch((err) => {
         console.error(err);
     });
-
-// /* proxy for now, for flexibility in this area later */
-// const setState = (newState) => {
-//   state = newState;
-// }
-
-// const states = {
-//   DEFAULT: "DEFAULT",
-//   GET_NAME: "GET_NAME",
-//   GET_ADDRESS: "GET_ADDRESS",
-//   GET_PHONE: "GET_PHONE",
-//   GET_GENDER: "GET_GENDER",
-//   GET_CONFIRMATION: "GET_CONFIRMATION"
-// }
-
-// /* init state, set initial state */
-// let state;
-// state = states.DEFAULT;
-
-// /* Store User Data. */
-// var userData = [];
-
-// /* functions that send responses and set state, called based on state */
-
-// const handlers = {};
-
-// handlers.DEFAULT = (message) => {
-  
-//   console.log(message.text, state);
-//   rtm.sendMessage("Welcome! What's your name?", message.channel);
-//   setState(states.GET_NAME);
-//   console.log(message.text, state);
-// }
+}
 
 // handlers.GET_NAME = (message) => {
   
@@ -121,13 +117,13 @@ WitClient.message('I want to go to Madrid between November 24th and 30th', {})
 // }
 
 
-// const router = (message) => {
-//   handlers[state](message);
-// }
+const router = (message) => {
+  handlers[state](message);
+}
 
-// // Listens to all `message` events from the team
-// rtm.on(RTM_EVENTS.MESSAGE, (message) => {
-//   router(message);
-// });
+// Listens to all `message` events from the team
+rtm.on(RTM_EVENTS.MESSAGE, (message) => {
+  router(message);
+});
 
-// rtm.start();
+rtm.start();
