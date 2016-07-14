@@ -12,5 +12,9 @@
   "dependencies": {
     "@slack/client": "^3.5.1",
     "is-phone": "^v2.0.0"
+  },
+  "devDependencies": {
+    "request": "^2.73.0",
+    "wit-js": "0.0.1"
   }
 }
