@@ -14,6 +14,7 @@
     "is-phone": "^v2.0.0"
   },
   "devDependencies": {
+    "houndify": "0.0.5",
     "request": "^2.73.0",
     "wit-js": "0.0.1"
   }

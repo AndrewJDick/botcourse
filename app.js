@@ -3,7 +3,16 @@ const MemoryDataStore = require('@slack/client').MemoryDataStore;
 const RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 const token = process.env.SLACK_TOKEN || '';
 const isPhone = require('is-phone');
-const Wit = require('wit-js');
+const Houndify = require('houndify').Houndify;
+
+var hound = new Houndify({
+  auth: {
+    clientId: 'E3VqGOEfLHH-MrpY04SLhA==',
+    clientKey: 'eHJHJpJWPFgg-D7zucjbLRWiKvK16-DlC_Sb6X5wOK4Mq7xI5ysgwwLwErUzOkNlHRE5vIYBEgQqcO8XhiGohA==',
+    userId: 'houndify_try_api_user',
+  },
+});
+
 
 const rtm = new RtmClient(token, {
   logLevel: 'error',
@@ -17,17 +26,15 @@ const rtm = new RtmClient(token, {
 });
 
 
-const WitClient = new Wit.Client({
-  apiToken: '4BPM4Z5KW42AHDFOTSOGIRK4VSLRXHD3'
+rtm.on(RTM_EVENTS.MESSAGE, (message) => {
+
+ console.log(message.text);
+   hound.query(message.text, null, (err, res) => {
+     if (err) console.log(err)
+     rtm.sendMessage(res[0].raw.WrittenResponseLong, message.channel)
+   });
 });
- 
-WitClient.message('I want to go to Madrid between November 24th and 30th', {})
-    .then((response) => {
-        console.log(response.entities);
-    })
-    .catch((err) => {
-        console.error(err);
-    });
+
 
 // /* proxy for now, for flexibility in this area later */
 // const setState = (newState) => {
@@ -42,6 +49,7 @@ WitClient.message('I want to go to Madrid between November 24th and 30th', {})
 //   GET_GENDER: "GET_GENDER",
 //   GET_CONFIRMATION: "GET_CONFIRMATION"
 // }
+ 
 
 // /* init state, set initial state */
 // let state;
@@ -130,4 +138,4 @@ WitClient.message('I want to go to Madrid between November 24th and 30th', {})
 //   router(message);
 // });
 
-// rtm.start();
+rtm.start();
